@@ -1,0 +1,10 @@
+node_modules
+dist
+
+# Your photos stay on your computer: only the folder's README is kept in git.
+photos/*
+!photos/README.md
+
+# Made from photos/ by `npm run photos`
+public/photos
+src/data/photos.generated.json

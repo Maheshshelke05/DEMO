@@ -1,0 +1,274 @@
+@import 'tailwindcss';
+
+@import '@fontsource/caveat/latin-500.css';
+@import '@fontsource/caveat/latin-700.css';
+@import '@fontsource/homemade-apple/latin-400.css';
+@import '@fontsource/playfair-display/latin-400-italic.css';
+@import '@fontsource/playfair-display/latin-700.css';
+@import '@fontsource/playfair-display/latin-700-italic.css';
+@import '@fontsource/special-elite/latin-400.css';
+@import '@fontsource/vt323/latin-400.css';
+
+@theme {
+  --spacing: 0.1rem;
+
+  --color-barbie: #ffb6d5;
+  --color-blush: #ffe0ea;
+  --color-cherry: #a71930;
+  --color-burgundy: #57131f;
+  --color-cream: #fff1d8;
+  --color-vintage: #fffdf8;
+  --color-rose: #f28bae;
+  --color-ink: #3a1a1f;
+
+  --font-hand: 'Caveat', cursive;
+  --font-pen: 'Homemade Apple', cursive;
+  --font-display: 'Playfair Display', serif;
+  --font-type: 'Special Elite', monospace;
+  --font-lcd: 'VT323', monospace;
+}
+
+/* The whole site is a 39rem-wide sheet. 1rem is 10px on a 390px phone and scales with the
+   screen, so every collage keeps its exact composition from 320px phones up to the desktop column. */
+html {
+  font-size: min(calc(100vw / 39), 12.4px);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: #2a0810;
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar { display: none; }
+
+:root {
+  /* --s is the same unit for pinned stages, also limited by height so nothing overflows short screens */
+  --vh: 100vh;
+  --s: min(1rem, calc(var(--vh) / 66));
+  --ease: cubic-bezier(0.22, 0.9, 0.24, 1);
+  --col: min(100vw, 39rem);
+}
+@supports (height: 1svh) {
+  :root { --vh: 100svh; }
+}
+
+body {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-hand);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+  background: #2a0810 url('/art/tex/wine-leather.webp') center / 28rem;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgb(40 6 14 / 0) 30%, rgb(20 3 8 / 0.82) 100%);
+  pointer-events: none;
+}
+@layer base {
+  img { user-select: none; -webkit-user-drag: none; -webkit-touch-callout: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; touch-action: manipulation; }
+  button:focus-visible { outline: 0.25rem solid var(--color-barbie); outline-offset: 0.3rem; border-radius: 1rem; }
+}
+
+/* The column: full phone width, a centred scrapbook on desktop */
+.col {
+  position: relative;
+  width: var(--col);
+  margin: 0 auto;
+  overflow-x: clip;
+  box-shadow: 0 0 6rem rgb(0 0 0 / 0.55);
+}
+.fixed-col {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - var(--col) / 2);
+  width: var(--col);
+  overflow: hidden;
+}
+
+/* ------------------------------------------------- paper and fabric */
+.bg-burgundy { background: #57131f url('/art/tex/burgundy.webp') 0 0 / 26rem; }
+.bg-leather { background: #a71930 url('/art/tex/leather.webp') 0 0 / 22rem; }
+.bg-wine { background: #57131f url('/art/tex/wine-leather.webp') 0 0 / 22rem; }
+.bg-cream { background: #fff1d8 url('/art/tex/cream.webp') 0 0 / 30rem; }
+.bg-blush { background: #ffe0ea url('/art/tex/blush.webp') 0 0 / 30rem; }
+.bg-kraft { background: #cfae82 url('/art/tex/kraft.webp') 0 0 / 24rem; }
+.bg-gingham-red { background: #f6dede url('/art/tex/gingham-red.webp') 0 0 / 16rem; }
+.bg-gingham-pink { background: #ffe6ef url('/art/tex/gingham-pink.webp') 0 0 / 16rem; }
+.bg-gingham-yellow { background: #fff1c7 url('/art/tex/gingham-yellow.webp') 0 0 / 16rem; }
+.bg-denim { background: #2c4a80 url('/art/tex/denim.webp') 0 0 / 22rem; }
+
+@layer components {
+/* ------------------------------------------------- stacked scrapbook pages */
+.sheet { position: sticky; top: min(0px, calc(var(--vh) - var(--h, 100vh))); }
+.sheet-inner { position: relative; min-height: var(--vh); transform-origin: 50% calc(100% - 50vh); }
+.sheet-off .ambient { display: none; }
+.sheet-off * { animation-play-state: paused !important; }
+.sheet-dim {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100vh;
+  background: #16030a;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 40;
+}
+.edge {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  bottom: calc(100% - 0.1rem);
+  height: 5.85rem;
+  pointer-events: none;
+  z-index: 30;
+}
+.edge > * {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+.edge-shadow { background-size: 100% 100%; }
+.edge-rim { background: #fbf6ea; }
+.edge-body { background-position: 0 100% !important; }
+
+/* ------------------------------------------------- photos */
+.polaroid {
+  position: relative;
+  background: linear-gradient(170deg, #fffefb, #fbf5e9 70%, #f4ead8);
+  box-shadow: 0 0.2rem 0.5rem rgb(30 5 10 / 0.3), 0 0.9rem 1.8rem rgb(30 5 10 / 0.34);
+  margin: 0;
+}
+.photo-window { position: relative; overflow: hidden; background-size: cover; background-position: center; }
+.photo-window img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.develop {
+  position: absolute;
+  inset: 0;
+  background: #e9e2cf;
+  transition: opacity 1.05s cubic-bezier(0.3, 0.1, 0.3, 1);
+  pointer-events: none;
+}
+.gloss {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(118deg, rgb(255 255 255 / 0.2) 0%, rgb(255 255 255 / 0.04) 28%, rgb(255 255 255 / 0) 46%);
+  pointer-events: none;
+}
+.datestamp {
+  position: absolute;
+  right: 0.55em;
+  bottom: 0.3em;
+  font-family: var(--font-lcd);
+  color: #ff9a3c;
+  text-shadow: 0 0 0.35em rgb(255 120 30 / 0.85);
+  letter-spacing: 0.06em;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------- buttons */
+.pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 5.2rem;
+  padding: 0 3rem;
+  border-radius: 99rem;
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: 2.9rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: #6e0d20;
+  background: linear-gradient(180deg, #ffd0e3 0%, #ffb6d5 46%, #f28bae 100%);
+  box-shadow: 0 0.55rem 0 #b84a78, 0 0.95rem 1.6rem rgb(60 5 20 / 0.42), inset 0 0.18rem 0 rgb(255 255 255 / 0.75);
+  transition: transform 0.14s var(--ease), box-shadow 0.14s var(--ease);
+}
+.pill::after {
+  content: '';
+  position: absolute;
+  left: 1.1rem;
+  right: 1.1rem;
+  top: 0.45rem;
+  height: 1.3rem;
+  border-radius: 99rem;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.68), rgb(255 255 255 / 0));
+  pointer-events: none;
+}
+.pill:active { transform: translateY(0.42rem); box-shadow: 0 0.13rem 0 #b84a78, 0 0.3rem 0.7rem rgb(60 5 20 / 0.42), inset 0 0.18rem 0 rgb(255 255 255 / 0.75); }
+.pill-quiet {
+  color: #6e0d20;
+  background: linear-gradient(180deg, #fffdf8, #fff1d8 70%, #f0dcb9);
+  box-shadow: 0 0.55rem 0 #b99c70, 0 0.95rem 1.6rem rgb(60 5 20 / 0.34), inset 0 0.18rem 0 #fff;
+}
+.pill-quiet:active { box-shadow: 0 0.13rem 0 #b99c70, 0 0.3rem 0.7rem rgb(60 5 20 / 0.34), inset 0 0.18rem 0 #fff; }
+.pill-cherry {
+  color: #fff1d8;
+  background: linear-gradient(180deg, #d73a52, #a71930 60%, #7f1021);
+  box-shadow: 0 0.55rem 0 #4e0713, 0 0.95rem 1.6rem rgb(30 0 8 / 0.5), inset 0 0.18rem 0 rgb(255 255 255 / 0.4);
+}
+.pill-cherry::after { opacity: 0.4; }
+.pill-cherry:active { box-shadow: 0 0.13rem 0 #4e0713, 0 0.3rem 0.7rem rgb(30 0 8 / 0.5), inset 0 0.18rem 0 rgb(255 255 255 / 0.4); }
+
+}
+
+/* ------------------------------------------------- ambient motion: compositor-only, so it never stutters */
+@keyframes rise {
+  0% { transform: translate3d(0, 6vh, 0) rotate(var(--r0)) scale(var(--sc)); opacity: 0; }
+  12% { opacity: var(--op); }
+  85% { opacity: var(--op); }
+  100% { transform: translate3d(var(--dx), -112vh, 0) rotate(var(--r1)) scale(var(--sc)); opacity: 0; }
+}
+@keyframes fall3d {
+  0% { transform: translate3d(0, -12vh, 0) rotateX(0deg) rotateY(0deg) rotateZ(var(--r0)); opacity: 0; }
+  10% { opacity: var(--op); }
+  90% { opacity: var(--op); }
+  100% { transform: translate3d(var(--dx), 112vh, 0) rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(var(--r1)); opacity: 0; }
+}
+@keyframes twinkle {
+  0%, 100% { transform: scale(0.35) rotate(0deg); opacity: 0; }
+  50% { transform: scale(1) rotate(40deg); opacity: 1; }
+}
+@keyframes bob {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--rot, 0deg)); }
+  50% { transform: translate3d(0, var(--bob, -0.9rem), 0) rotate(calc(var(--rot, 0deg) + var(--sway, 3deg))); }
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.22); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.14); }
+  70% { transform: scale(1); }
+}
+@keyframes flutterL { 0%, 100% { transform: rotateY(12deg); } 50% { transform: rotateY(72deg); } }
+@keyframes flutterR { 0%, 100% { transform: rotateY(-12deg); } 50% { transform: rotateY(-72deg); } }
+@keyframes wiggle {
+  0%, 100% { transform: rotate(var(--rot, 0deg)); }
+  25% { transform: rotate(calc(var(--rot, 0deg) - 2.5deg)); }
+  75% { transform: rotate(calc(var(--rot, 0deg) + 2.5deg)); }
+}
+@keyframes pulseRing {
+  0% { transform: scale(0.9); opacity: 0.85; }
+  100% { transform: scale(1.75); opacity: 0; }
+}
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+@keyframes pulseBar { 0%, 100% { transform: scaleY(0.55); } 50% { transform: scaleY(1.25); } }
+@keyframes nudge { 0%, 100% { transform: translateY(0); opacity: 0.55; } 50% { transform: translateY(0.75rem); opacity: 1; } }
+@keyframes shimmer { 0% { transform: translateX(-120%) skewX(-18deg); } 100% { transform: translateX(240%) skewX(-18deg); } }
+
+.bob { animation: bob var(--t, 5s) ease-in-out infinite; animation-delay: var(--delay, 0s); }
+.wiggle { animation: wiggle var(--t, 2.6s) ease-in-out infinite; }
+
+/* Anything that shows on load respects the reduced motion setting */
+@media (prefers-reduced-motion: reduce) {
+  .bob, .wiggle, .ambient > * { animation-duration: 40s !important; }
+}
